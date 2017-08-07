@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<style type="text/css">
+body {
+	background-color: #000000;
+}
+div{
+	display:block;
+	width: 100%;
+}
+table{
+	width:800px;
+	margin:auto;
+}
+.tdline1{
+	width: 100%;
+	border: 1px dashed #FFFFFF;
+	padding-left:150px;
+	padding-right:150px;
+}
+.tdline2{
+	padding-top:10px;
+	padding-bottom:10px;
+}
+.tdline3{
+	width: 100%;
+	border: 1px dashed #00FF00;
+}
+span.spQuestion {
+	padding:12px;
+	display:block;
+	margin:auto;
+	color:#FFFFFF;
+	font-family: 'Consolas';
+}
+section {
+	color:#FFFFFF;
+	width: 100%;
+	text-align: right;
+}
+section input {
+	display:inline-block;
+	height:28px;
+	font-size: 11pt;
+	padding:0px;
+	text-align: center;
+	letter-spacing: 2pt;
+}
+section button {
+	display:inline-block;
+	height:30px;
+}
+section button:DISABLED {
+	background-color: #666666;
+	color:#AAAAAA;
+}
+
+span.spSolve {
+	color:#00FF00;
+	font-family: 'Consolas';
+	display: block;
+	width: 100%;
+	padding:20px;
+	letter-spacing: 10pt;
+	font-size: 11pt;
+	text-align: center;
+}
+span.spSolve span.rst {
+	color:#FFFFFF;
+	font-weight: bold;
+	font-size: 14pt;
+}
+</style>
+<script>
+	window.onload = function(){
+		document.getElementById("spSolve").innerHTML="";
+		document.getElementById("btnReset").disabled=true;
+	}
+	window.onclick = function(event){
+		if(!event.target.disabled){
+			if(typeof(window[event.target.id+"_onclick"])=="function"){
+				window[event.target.id+"_onclick"]();
+			}
+		}
+	}
+	window.onkeypress = function(event){
+		event=window.event;
+		if(event.target.id=="stVal"){
+			if(event.keyCode < 48 || event.keyCode > 57){
+				return false;
+			}			
+		}
+	}
+	function stVal_onkeypress(event){
+
+	}
+	function btnReset_onclick(){
+		document.getElementById("stVal").value = "";
+		document.getElementById("spSolve").innerHTML="";
+		document.getElementById("btnReset").disabled=true;
+		document.getElementById("btnCalA").disabled=false;
+		document.getElementById("btnCalD").disabled=false;
+	}
+	var tryCnt = 0;
+	function btnCalA_onclick(){
+		btnCal_onclick("Asc");
+	}
+	function btnCalD_onclick(){
+		btnCal_onclick("Desc");
+	}
+	function btnCal_onclick(val){
+		tryCnt = 0;
+		document.getElementById("btnCalA").disabled=true;
+		document.getElementById("btnCalD").disabled=true;
+		var rstField = document.getElementById("spSolve");
+		var calRst = "";
+		var initNum = "0000000000";
+		//trigger
+		var curNum = document.getElementById("stVal").value;
+		if(curNum == "") curNum = initNum;
+		else if(curNum.length < 10) curNum = lpad(curNum,10,"0");
+		document.getElementById("spSolve").innerHTML+="Start ("+val+"):"+curNum;
+		var i=0;
+		var func = "fnCalNumber"+val;
+		while(curNum != window[func](curNum,"CHK")){
+			calRst = window[func](curNum,"CAL");
+			curNum = calRst;
+			//document.getElementById("spSolve").innerHTML+="<br>Try "+lpad((tryCnt++).toString(),2,"0")+":"+curNum;
+			i++;
+			if(i>100) break;
+		}
+		document.getElementById("spSolve").innerHTML+="<br><span class=\"rst\">Result :"+curNum+"</span>";
+		document.getElementById("btnReset").disabled=false;
+	}
+	function fnCalNumberAsc(curNum,gbn){
+		var calRst = "";
+		var cnts = [];
+		for(var i=0;i<curNum.length;i++){
+			cnts.push(curNum.charAt(i));
+		}
+		var str = curNum;
+		var charCnt = 0;
+		for(var i=0;i<curNum.length;i++){
+			charCnt=0;
+			if(str.indexOf(i.toString())>-1){ // i.toString() : 찾을문자
+				for(var j=0;j<str.length;j++){
+					if(str.charAt(j) == i.toString()){ // 현재문자와 찾을문자 비교
+						charCnt++;
+					}
+				}
+				if(charCnt >= str.length) charCnt = str.length-1;
+			}
+			cnts[i] = charCnt.toString();
+			calRst = ""+cnts[0]+cnts[1]+cnts[2]+cnts[3]+cnts[4]+cnts[5]+cnts[6]+cnts[7]+cnts[8]+cnts[9];
+			if(gbn=="CAL") document.getElementById("spSolve").innerHTML+="<br>"+lpad((tryCnt++).toString(),3,"0")+" Find["+i+"]:"+calRst;
+			str=calRst;
+		}
+		return str;
+	}
+	function fnCalNumberDesc(curNum,gbn){
+		var calRst = "";
+		var cnts = [];
+		for(var i=0;i<curNum.length;i++){
+			cnts.push(curNum.charAt(i));
+		}
+		var str = curNum;
+		var charCnt = 0;
+		for(var i=curNum.length-1;i>-1;i--){
+			charCnt=0;
+			if(str.indexOf(i.toString())>-1){ // i.toString() : 찾을문자
+				for(var j=0;j<str.length;j++){
+					if(str.charAt(j) == i.toString()){ // 현재문자와 찾을문자 비교
+						charCnt++;
+					}
+				}
+				if(charCnt >= str.length) charCnt = str.length-1;
+			}
+			cnts[i] = charCnt.toString();
+			calRst = ""+cnts[0]+cnts[1]+cnts[2]+cnts[3]+cnts[4]+cnts[5]+cnts[6]+cnts[7]+cnts[8]+cnts[9];
+			if(gbn=="CAL") document.getElementById("spSolve").innerHTML+="<br>"+lpad((tryCnt++).toString(),3,"0")+" Find["+i+"]:"+calRst;
+			str=calRst;
+		}
+		return str;
+	}
+	function lpad(val,nlength,vchar){
+		while(nlength > val.length){
+			val=vchar+val;
+		}
+		return val;
+	}
+</script>
+</head>
+<body>
+<div>
+<table>
+	<tbody>
+		<tr>
+			<td class="tdline1">
+				<span class="spQuestion">10자리의 숫자의 각 자리는 각각 0~9까지 숫자가 전체에 포함되어 있는 갯수를 나타낼때 이를 만족하는 숫자는?</span>
+			</td>
+		</tr>
+		<tr>
+			<td class="tdline2">
+				<section>
+					<input type="text" id="stVal" size="20" maxlength="10" placeholder="시작값 10자리">
+					<button type="button" id="btnCalA">시작 Asc</button>
+					<button type="button" id="btnCalD">시작Desc</button>
+					<button type="reset" id="btnReset">초기화</button>
+				</section>
+			</td>
+		</tr>
+		<tr>
+			<td class="tdline3">
+				<span class="spSolve" id="spSolve"></span>
+			</td>
+		</tr>
+	</tbody>
+</table>
+</div>
+</body>
+</html>

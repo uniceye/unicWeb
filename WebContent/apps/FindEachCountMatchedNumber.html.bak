@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<style type="text/css">
+body {
+	background-color: #000000;
+}
+div{
+	display:block;
+	width: 100%;
+}
+table{
+	width:400px;
+	margin:auto;
+}
+.tdline1{
+	width: 100%;
+	border: 1px dashed #FFFFFF;
+}
+.tdline2{
+	padding-top:10px;
+	padding-bottom:10px;
+}
+.tdline3{
+	width: 100%;
+	border: 1px dashed #00FF00;
+}
+span.spQuestion {
+	padding:12px;
+	display:block;
+	margin:auto;
+	color:#FFFFFF;
+	font-family: 'Consolas';
+}
+section {
+	width: 100%;
+	text-align: right;
+}
+span.spSolve {
+	color:#00FF00;
+	font-family: 'Consolas';
+	display: block;
+	width: 100%;
+	padding:30px;
+	letter-spacing: 10pt;
+	font-size: 14pt;
+	text-align: center;
+}
+</style>
+<script>
+	window.onload = function(){
+		document.getElementById("spSolve").innerHTML="0000000000";
+	}
+	window.onclick = function(event){
+		if(typeof(window[event.target.id+"_onclick"])=="function"){
+			window[event.target.id+"_onclick"]();
+		}
+	}
+	function btnCal_onclick(val){
+		var rstField = document.getElementById("spSolve");
+		var calRst,curNum;
+		for(var i=0; i<10000000000; i++){
+			rstField.innerHTML=fnMakeFullNum(i.toString(),10);			
+		}
+
+
+	}
+	function fnMakeFullNum(val,valLen){
+		alert(valLen-val.length);
+		while(val.length<valLen){
+			val = "0"+val;
+		}
+		return val;
+	}
+</script>
+</head>
+<body>
+<div>
+<table>
+	<tbody>
+		<tr>
+			<td class="tdline1">
+				<span class="spQuestion">10자리의 숫자가 있는 각 자리는 각각 0~9까지 숫자가 전체에 포함되어 있는 갯수를 나타낼때 만족하는 숫자는?</span>
+			</td>
+		</tr>
+		<tr>
+			<td class="tdline2">
+				<section>
+					<button type="button" id="btnCal">시작</button>
+					<button type="reset" id="btnReset">초기화</button>
+				</section>
+			</td>
+		</tr>
+		<tr>
+			<td class="tdline3">
+				<span class="spSolve" id="spSolve"></span>
+			</td>
+		</tr>
+	</tbody>
+</table>
+
+</div>
+</body>
+</html>
